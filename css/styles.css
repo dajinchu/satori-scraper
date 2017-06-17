@@ -1,4 +1,5 @@
-#scraper-utility{
+#scraper-tool{
+	position: fixed;
 	margin: 0px;
 	padding: 0px;
 	-webkit-box-sizing: border-box;
@@ -6,20 +7,18 @@
 	box-sizing: border-box;
 	width: 100%;
 	z-index: 16;
-	background: white;
-	font-family: Times New Roman;
-	line-height: 150%;
+	background: #00c3ff;
+	font-family: Verdana;
 	font-weight: normal;
 }
 
-#scraper-utility>h1{
+.SU-title{
 	padding: 12px;
 	text-align: center;
 	font-size: 32px;
 }
-
-#scraper-utility>aside{
-	padding: 12px;
+.SU-subtitle{
+	padding-bottom: 12px;
 	text-align: center;
 	font-size: 16px;
 }
