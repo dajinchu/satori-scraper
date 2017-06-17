@@ -4,6 +4,7 @@ window.onload = function(){
 	//insert the scraper utility div before the first body element
 	document.body.insertBefore(scraperUtilityDiv, document.body.firstChild);
 
+	scraperUtilityDiv.id = "scraper-utility";
 	scraperUtilityDiv.style.position = "fixed";
 	
 	//load scraper.html into scraperUtilityDiv

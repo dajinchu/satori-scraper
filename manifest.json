@@ -14,11 +14,12 @@
 	],
 	"content_scripts": [
 		{
-			"matches": ["http://*/*"],
-			"js": ["js/jquery-3.2.1.min.js","content-script.js"]
+			"matches": ["<all_urls>"],
+			"css": ["css/styles.css"],
+			"js": ["js/jquery-3.2.1.min.js", "content-script.js"]
 		}
 	],
 	"web_accessible_resources": [
-		"html/scraper.html"
+		"html/*"
 	]
 }
