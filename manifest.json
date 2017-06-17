@@ -3,7 +3,7 @@
 	
 	"name": "Scraper Utiity",
 	"description": "This extension extracts websites' data and pipes it to a database",
-	"version": "0.1",
+	"version": "0.0.1",
 	
 	"browser_action":{
 		"default_icon": "icon.png",
@@ -11,5 +11,14 @@
 	},
 	"permissions": [
 		"activeTab"
+	],
+	"content_scripts": [
+		{
+			"matches": ["http://*/*"],
+			"js": ["js/jquery-3.2.1.min.js","content-script.js"]
+		}
+	],
+	"web_accessible_resources": [
+		"html/scraper.html"
 	]
 }
