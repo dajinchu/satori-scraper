@@ -27,8 +27,13 @@
 }*/
 
 #su-fields-toggle{
-	position: inherit;
-	z-index: 2000000001;
+	width: 2%;
+	padding: 8px;
+	font-size: 16px;
+}
+
+#su-field-edit{
+	width: 2%;
 	padding: 8px;
 	font-size: 16px;
 }

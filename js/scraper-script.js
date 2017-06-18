@@ -25,7 +25,7 @@ function createFieldDivs(fieldDivs, fields){
 		
 		//field that specifies the item field's name
 		var fieldName = document.createElement("div");
-		fieldName.className = "su-field-name";
+		fieldName.className = "su-field-name-container";
 		fieldName.innerHTML = fields[i].name;
 		fieldDiv.appendChild(fieldName);
 		
@@ -55,9 +55,12 @@ function toggleFieldDivs(fieldDivs, show){
 	}
 }
 
-function updateFieldDivs(fieldDivs, fieldDivsContainer){
+function updateFieldDivs(fieldDivs, fieldDivsContainer, toggleButton, editButton){
 	fieldDivsContainer.innerHTML = "";
 	appendFieldDivs(fieldDivs, fieldDivsContainer);
+	fieldDivs[0].insertBefore(toggleButton, fieldDivs[0].childNodes[0]);
+	fieldDivs[0].insertBefore(editButton, fieldDivs[0].childNodes[2]);
+	fieldDivs[0].childNodes[1].style.width = "16%";
 }
 
 function selectFieldDiv(fieldDivs, selection){
@@ -80,7 +83,8 @@ var field2 = new field("product_price", "class=\"product_price\"", "19.99");
 var field3 = new field("product_rating", "class=\"product_rating\"", "4.51");
 var fields = [field1, field2, field3];
 var fieldDivs = new Array();
-var fieldDivsToggle;
+var fieldDivsToggle = document.createElement("div");
+var fieldDivsEdit = document.createElement("div");
 var fieldDivsContainer;
 var showFieldDivs;
 
@@ -94,12 +98,14 @@ window.onload = function(){
 		console.log(showTable);
 		toggleTable(document.getElementById("su-table"), showTable)
 	});*/
-	fieldDivsToggle = document.getElementById("su-fields-toggle");
 	fieldDivsContainer = document.getElementById("su-fields-container");
 	showFieldDivs = false;
+	fieldDivsToggle.id = "su-fields-toggle";
+	fieldDivsEdit.id = "su-field-edit";
+	fieldDivsEdit.innerHTML = "/";
 	
 	createFieldDivs(fieldDivs, fields);
-	appendFieldDivs(fieldDivs, fieldDivsContainer);
+	updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsToggle, fieldDivsEdit);
 	toggleFieldDivs(fieldDivs, showFieldDivs);
 	fieldDivsToggle.innerHTML = ">";
 	fieldDivsToggle.addEventListener("click", function(){
@@ -110,7 +116,7 @@ window.onload = function(){
 	for(var i=0; i<fieldDivs.length; i++){
 		fieldDivs[i].addEventListener("click", function(){
 			selectFieldDiv(fieldDivs, this);
-			updateFieldDivs(fieldDivs, fieldDivsContainer);
+			updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsToggle, fieldDivsEdit);
 		});
 	}
 }
