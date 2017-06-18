@@ -282,7 +282,6 @@ function onLoad(){
             },
             data: datum
         }, function(responseText) {
-            alert(responseText);
             /*Callback function to deal with the response*/
         });
     });
