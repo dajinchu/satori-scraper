@@ -1,3 +1,4 @@
+
 //Injection
 var CSSNode = document.createElement("link");
 CSSNode.rel = "stylesheet";
@@ -7,7 +8,7 @@ document.head.appendChild(CSSNode);
 var scraperTool = document.createElement("header");
 scraperTool.id = "scraper-tool";
 document.body.insertBefore(scraperTool, document.body.firstChild);
-$(scraperTool).load(chrome.extension.getURL("html/scraper.html"));
+$(scraperTool).load(chrome.extension.getURL("html/scraper.html"),onLoad);
 
 function field(name, selector, example){
 	this.name = name;
@@ -31,49 +32,49 @@ function field(name, selector, example){
 function createFieldDiv(field){ //Begin change 2
 	var fieldDiv = document.createElement("div");
 	fieldDiv.className = "su-field";
-	
+
 	//field that specifies the item field's name
 	var fieldName = document.createElement("div");
 	fieldName.className = "su-field-name";
 	fieldName.innerHTML = field.name;
 	fieldDiv.appendChild(fieldName);
-	
+
 	var fieldSelector = document.createElement("div");
 	fieldSelector.className = "su-field-selector";
 	fieldSelector.innerHTML = field.selector;
 	fieldDiv.appendChild(fieldSelector);
-	
+
 	var fieldExample = document.createElement("div");
 	fieldExample.className = "su-field-example";
 	fieldExample.innerHTML = field.example;
 	fieldDiv.appendChild(fieldExample);
-	
+
 	return fieldDiv;
 }
 
 function createFieldDivs(fieldDivs, fields){
 	for(var i=0; i<fields.length; i++){
-		
+
 		/* //div that displays the item field's properties
 		var fieldDiv = document.createElement("div");
 		fieldDiv.className = "su-field";
-		
+
 		//field that specifies the item field's name
 		var fieldName = document.createElement("div");
 		fieldName.className = "su-field-name";
 		fieldName.innerHTML = fields[i].name;
 		fieldDiv.appendChild(fieldName);
-		
+
 		var fieldSelector = document.createElement("div");
 		fieldSelector.className = "su-field-selector";
 		fieldSelector.innerHTML = fields[i].selector;
 		fieldDiv.appendChild(fieldSelector);
-		
+
 		var fieldExample = document.createElement("div");
 		fieldExample.className = "su-field-example";
 		fieldExample.innerHTML = fields[i].example;
 		fieldDiv.appendChild(fieldExample); */
-		
+
 		fieldDivs[i] = createFieldDiv(fields[i]);
 	}
 } //End change 2
@@ -132,18 +133,18 @@ var fieldDivsContainer;
 var showFieldDivs;
 //var editFieldDiv;
 
-window.onload = function(){
+function onLoad(){
 	fieldDivsContainer = document.getElementById("su-fields-container");
 	showFieldDivs = false;
 	//editFieldDiv = false;
 	fieldDivsAdd.id = "su-field-add";
 	fieldDivsAdd.innerHTML = "+";
-	
+
 	fieldDivsToggle.id = "su-fields-toggle";
 	fieldDivsToggle.innerHTML = ">";
 	//fieldDivsEdit.id = "su-field-edit";
 	//fieldDivsEdit.innerHTML = "|";
-	
+
 	createFieldDivs(fieldDivs, fields);
 	updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
 	toggleFieldDivs(fieldDivs, showFieldDivs);
@@ -172,13 +173,13 @@ window.onload = function(){
 		fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
 		newFieldDiv.childNodes[1].focus();*/
 	});
-	
+
 	fieldDivsToggle.addEventListener("click", function(){
 		showFieldDivs = !showFieldDivs;
 		toggleFieldDivs(fieldDivs, showFieldDivs);
 		fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
 	});
-	
+
 	for(var i=0; i<fieldDivs.length; i++){
 		fieldDivs[i].addEventListener("click", function(){
 			if(this.selectable){
@@ -238,7 +239,7 @@ window.onload = function(){
 			var selector = intersectionAll(selectorLists).join('')
             similarElements = $(selector);
             updateHighlights(similarElements);
-			
+
 			fields[0].selector = selector;
 			fieldDivs[0] = createFieldDiv(fields[0]);
 			updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle);
