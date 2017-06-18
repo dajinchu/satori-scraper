@@ -11,7 +11,8 @@
 	"permissions": [
         "webRequest",
 		"webRequestBlocking",
-		"activeTab"
+		"activeTab",
+		"http://192.168.1.62:3000/queries"
 	],
 	"background": {
 	    "scripts": ["js/jquery-3.2.1.min.js","js/background-script.js"]

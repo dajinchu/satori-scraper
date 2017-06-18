@@ -26,6 +26,12 @@
 	padding: 8px;
 }*/
 
+#su-submit-button{
+	width: 2%;
+	padding: 8px;
+	font-size: 16px;
+}
+
 #su-fields-toggle{
 	width: 2%;
 	padding: 8px;
@@ -65,6 +71,6 @@
 	outline: 1px solid blue;
 }
 .el-highlight {
-	background-color: rgb(254, 246, 76);
+	background-color: rgb(254, 246, 76) !important;
 	box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 2px;
 }

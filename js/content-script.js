@@ -91,11 +91,12 @@ function toggleFieldDivs(fieldDivs, show){
 	}
 }
 
-function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton /*editButton*/){ //Begin change 3
+function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton, submitButton /*editButton*/){ //Begin change 3
 	fieldDivsContainer.innerHTML = "";
 	appendFieldDivs(fieldDivs, fieldDivsContainer);
 	fieldDivs[0].insertBefore(toggleButton, fieldDivs[0].childNodes[0]);
 	fieldDivs[0].insertBefore(addButton, fieldDivs[0].childNodes[2]);
+    fieldDivs[0].appendChild(submitButton);
 	//fieldDivs[0].insertBefore(editButton, fieldDivs[0].childNodes[2]);
 	fieldDivs[0].childNodes[1].style.width = "14%";
 	fieldDivs[0].childNodes[1].contentEditable = true;
@@ -107,6 +108,9 @@ function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton 
 } //End change 3
 
 function selectFieldDiv(fields, fieldDivs, selection){
+    selectedElements = [];
+    similarElements = [];
+    updateHighlights([]);
 	if(selection != fieldDivs[0]){
 		for(var i=1; i<fieldDivs.length; i++){
 			if(fieldDivs[i] == selection){
@@ -121,10 +125,8 @@ function selectFieldDiv(fields, fieldDivs, selection){
 	}
 }
 
-var field1 = new field("product_name", "class=\"product_name\"", "Blue Jeans");
-var field2 = new field("product_price", "class=\"product_price\"", "19.99");
-var field3 = new field("product_rating", "class=\"product_rating\"", "4.51");
-var fields = [field1, field2, field3];
+var field1 = new field("field", "", "");
+var fields = [field1];
 var fieldDivs = new Array();
 var fieldDivsAdd = document.createElement("div");
 var fieldDivsToggle = document.createElement("div");
@@ -133,6 +135,76 @@ var fieldDivsContainer;
 var showFieldDivs;
 //var editFieldDiv;
 
+var submitButton = document.createElement("div");
+submitButton.innerHTML = "Submit";
+submitButton.id = "su-submit-button";
+
+// selection highlighting
+var selectedElements = [];
+var similarElements = [];
+function validTarget (target){
+    return target.parents("#scraper-tool").length!=1 &&
+           target.contents().length &&
+           target.contents().get(0).textContent.trim().length>0;
+}
+function selectElement(element){
+    selectedElements.push(element);
+    if(selectedElements.length > 1){
+        var selectorLists = selectedElements.map(function(e){
+            var selectorList = e.attr('class').split(/\s+/).map(function(cls){return '.'+cls});
+            removeFromArray(selectorList, '.el-highlight');
+            removeFromArray(selectorList, '.el-selection');
+            return selectorList;
+        });
+        var selector = intersectionAll(selectorLists).join('')
+        similarElements = $(selector);
+        updateHighlights(similarElements);
+
+        fields[0].selector = selector;
+        fields[0].example = selectedElements[0].text();
+        fieldDivs[0] = createFieldDiv(fields[0]);
+        updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle, submitButton);
+    }
+}
+
+var _lastHighlights = [];
+function updateHighlights(newHighlights){
+    $(_lastHighlights).removeClass("el-highlight");
+    $(newHighlights).addClass("el-highlight");
+    _lastHighlights = newHighlights;
+}
+
+function removeFromArray(array, element){
+    var index = array.indexOf(element);
+    if(index > -1){
+        array.splice(index, 1);
+    }
+}
+
+// https://jsfiddle.net/Arg0n/zL0jgspz/2/
+function intersectionAll() {
+    var result = [];
+  var lists;
+
+  if(arguments.length === 1) {
+    lists = arguments[0];
+  } else {
+    lists = arguments;
+  }
+
+  for(var i = 0; i < lists.length; i++) {
+    var currentList = lists[i];
+    for(var y = 0; y < currentList.length; y++) {
+        var currentValue = currentList[y];
+      if(result.indexOf(currentValue) === -1) {
+        if(lists.filter(function(obj) { return obj.indexOf(currentValue) == -1 }).length == 0) {
+          result.push(currentValue);
+        }
+      }
+    }
+  }
+  return result;
+}
 function onLoad(){
 	fieldDivsContainer = document.getElementById("su-fields-container");
 	showFieldDivs = false;
@@ -146,20 +218,20 @@ function onLoad(){
 	//fieldDivsEdit.innerHTML = "|";
 
 	createFieldDivs(fieldDivs, fields);
-	updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+	updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle, submitButton /*fieldDivsEdit*/);
 	toggleFieldDivs(fieldDivs, showFieldDivs);
 
 	fieldDivsAdd.addEventListener("click", function(){
-		var newField = new field("Name", "Selector", "Example");
+		var newField = new field("field", "selector", "example");
 		fields.push(newField);
 		var newFieldDiv = createFieldDiv(newField);
 		fieldDivs.push(newFieldDiv);
 		selectFieldDiv(fields, fieldDivs, newFieldDiv);
-		updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+		updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle, submitButton /*fieldDivsEdit*/);
 		newFieldDiv.addEventListener("click", function(){
 			if(this.selectable){
 				selectFieldDiv(fields, fieldDivs, this);
-				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle, submitButton /*fieldDivsEdit*/);
 				showFieldDivs = !showFieldDivs;
 				toggleFieldDivs(fieldDivs, showFieldDivs);
 				fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
@@ -180,11 +252,46 @@ function onLoad(){
 		fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
 	});
 
+    submitButton.addEventListener('click',function(){
+        var fieldparsed=[];
+        $(fields).each(
+            function(idx, tfield){
+                fieldparsed.push({
+                    name: tfield.name,
+                    selector: tfield.selector,
+                    identifier: false
+                });
+            });
+        fieldparsed[0].identifier = true;
+        var datum = JSON.stringify({
+            "url": window.location.href,
+            "fields":fieldparsed,
+            "frequency": "test",
+            "channel": {
+                "key": "DeB404B291708e7C1CFF9EBFc2ABEF16",
+                "url": "wss://ww7yyumg.api.satori.com"
+            }
+        });
+        chrome.runtime.sendMessage({
+            action: 'xhttp',
+            url:"http://192.168.1.62:3000/queries",
+            type: 'POST',
+            processData: false,
+            headers: {
+                'content-type':"application/json"
+            },
+            data: datum
+        }, function(responseText) {
+            alert(responseText);
+            /*Callback function to deal with the response*/
+        });
+    });
+
 	for(var i=0; i<fieldDivs.length; i++){
 		fieldDivs[i].addEventListener("click", function(){
 			if(this.selectable){
 				selectFieldDiv(fields, fieldDivs, this);
-				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle, submitButton /*fieldDivsEdit*/);
 				showFieldDivs = !showFieldDivs;
 				toggleFieldDivs(fieldDivs, showFieldDivs);
 				fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
@@ -198,90 +305,24 @@ function onLoad(){
 		});
 	}
 
-    // selection highlighting
-    var selectedElements = [];
-    var similarElements = [];
+    //highlighting
+    $(window).mouseenter(function(event) {
+        var target = $(event.target);
+        if(validTarget(target)){
+            target.addClass("el-selection");
+        }
+    });
 
-    function validTarget (target){
-        return target.parents("#scraper-tool").length!=1 &&
-               target.contents().length &&
-               target.contents().get(0).textContent.trim().length>0;
-    }
-	$(window).mouseenter(function(event) {
-		var target = $(event.target);
-		if(validTarget(target)){
-		    target.addClass("el-selection");
-		}
-	});
+    $(window).mouseleave(function(event) {
+        $(event.target).removeClass("el-selection");
+    });
 
-	$(window).mouseleave(function(event) {
-	    $(event.target).removeClass("el-selection");
-	});
-
-	$(window).click(function(event) {
-		var target = $(event.target);
-		if(validTarget(target)){
+    $(window).click(function(event) {
+        var target = $(event.target);
+        if(validTarget(target)){
             selectElement(target);
             target.addClass("el-highlight");
-		}
-	    return false;
-	});
-
-    function selectElement(element){
-        selectedElements.push(element);
-        if(selectedElements.length > 1){
-            var selectorLists = selectedElements.map(function(e){
-                var selectorList = e.attr('class').split(/\s+/).map(function(cls){return '.'+cls});
-                removeFromArray(selectorList, '.el-highlight');
-                removeFromArray(selectorList, '.el-selection');
-                return selectorList;
-            });
-			var selector = intersectionAll(selectorLists).join('')
-            similarElements = $(selector);
-            updateHighlights(similarElements);
-
-			fields[0].selector = selector;
-			fieldDivs[0] = createFieldDiv(fields[0]);
-			updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle);
         }
-    }
-
-    var _lastHighlights = [];
-    function updateHighlights(newHighlights){
-        $(_lastHighlights).removeClass("el-highlight");
-        $(newHighlights).addClass("el-highlight");
-        _lastHighlights = newHighlights;
-    }
-
-    function removeFromArray(array, element){
-        var index = array.indexOf(element);
-        if(index > -1){
-            array.splice(index, 1);
-        }
-    }
-
-    // https://jsfiddle.net/Arg0n/zL0jgspz/2/
-    function intersectionAll() {
-    	var result = [];
-      var lists;
-
-      if(arguments.length === 1) {
-      	lists = arguments[0];
-      } else {
-      	lists = arguments;
-      }
-
-      for(var i = 0; i < lists.length; i++) {
-      	var currentList = lists[i];
-      	for(var y = 0; y < currentList.length; y++) {
-        	var currentValue = currentList[y];
-          if(result.indexOf(currentValue) === -1) {
-            if(lists.filter(function(obj) { return obj.indexOf(currentValue) == -1 }).length == 0) {
-              result.push(currentValue);
-            }
-          }
-        }
-      }
-      return result;
-    }
+        return false;
+    });
 }
