@@ -97,7 +97,7 @@ function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton 
 	fieldDivs[0].insertBefore(toggleButton, fieldDivs[0].childNodes[0]);
 	fieldDivs[0].insertBefore(addButton, fieldDivs[0].childNodes[2]);
 	//fieldDivs[0].insertBefore(editButton, fieldDivs[0].childNodes[2]);
-	fieldDivs[0].childNodes[1].style.width = "14%";
+	//fieldDivs[0].childNodes[1].style.width = "14%";
 	fieldDivs[0].childNodes[1].contentEditable = true;
 	fieldDivs[0].selectable = false;
 	for(var i=1; i<fieldDivs.length; i++){
@@ -126,12 +126,17 @@ var field2 = new field("product_price", "class=\"product_price\"", "19.99");
 var field3 = new field("product_rating", "class=\"product_rating\"", "4.51");
 var fields = [field1, field2, field3];
 var fieldDivs = new Array();
-var fieldDivsAdd = document.createElement("div");
-var fieldDivsToggle = document.createElement("div");
+var fieldDivsAdd = document.createElement("img");
+fieldDivsAdd.src = chrome.extension.getURL("images/add.png");
+
+var fieldDivsToggle = document.createElement("img");
+var collapsedImage = chrome.extension.getURL("images/collapsed.png");
+var uncollapsedImage = chrome.extension.getURL("images/uncollapsed.png");
 //var fieldDivsEdit = document.createElement("div");
 var fieldDivsContainer;
 var showFieldDivs;
 //var editFieldDiv;
+
 
 function onLoad(){
 	fieldDivsContainer = document.getElementById("su-fields-container");
@@ -141,12 +146,13 @@ function onLoad(){
 	fieldDivsAdd.innerHTML = "+";
 
 	fieldDivsToggle.id = "su-fields-toggle";
-	fieldDivsToggle.innerHTML = ">";
+	fieldDivsToggle.src = collapsedImage;
 	//fieldDivsEdit.id = "su-field-edit";
 	//fieldDivsEdit.innerHTML = "|";
 
 	createFieldDivs(fieldDivs, fields);
 	updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+	
 	toggleFieldDivs(fieldDivs, showFieldDivs);
 
 	fieldDivsAdd.addEventListener("click", function(){
@@ -156,13 +162,15 @@ function onLoad(){
 		fieldDivs.push(newFieldDiv);
 		selectFieldDiv(fields, fieldDivs, newFieldDiv);
 		updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+		
 		newFieldDiv.addEventListener("click", function(){
 			if(this.selectable){
 				selectFieldDiv(fields, fieldDivs, this);
 				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+				
 				showFieldDivs = !showFieldDivs;
 				toggleFieldDivs(fieldDivs, showFieldDivs);
-				fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
+				fieldDivsToggle.src = showFieldDivs ? uncollapsedImage : collapsedImage;
 				this.childNodes[1].focus();
 			}
 		});
@@ -177,7 +185,7 @@ function onLoad(){
 	fieldDivsToggle.addEventListener("click", function(){
 		showFieldDivs = !showFieldDivs;
 		toggleFieldDivs(fieldDivs, showFieldDivs);
-		fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
+		fieldDivsToggle.src = showFieldDivs ? uncollapsedImage : collapsedImage;
 	});
 
 	for(var i=0; i<fieldDivs.length; i++){
@@ -187,7 +195,7 @@ function onLoad(){
 				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
 				showFieldDivs = !showFieldDivs;
 				toggleFieldDivs(fieldDivs, showFieldDivs);
-				fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
+				fieldDivsToggle.src = showFieldDivs ? uncollapsedImage : collapsedImage;
 				this.childNodes[1].focus();
 			}
 		});
