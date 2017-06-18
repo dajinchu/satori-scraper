@@ -2,7 +2,7 @@ function field(name, selector, example){
 	this.name = name;
 	this.selector = selector;
 	this.example = example;
-	this.selectable = false;
+	this.selectable = false; //Change 1
 }
 
 /*function toggleTable(table, showAll){
@@ -17,7 +17,7 @@ function field(name, selector, example){
 	fields[fields.length] = field;
 }*/
 
-function createFieldDiv(field){
+function createFieldDiv(field){ //Begin change 2
 	var fieldDiv = document.createElement("div");
 	fieldDiv.className = "su-field";
 	
@@ -65,7 +65,7 @@ function createFieldDivs(fieldDivs, fields){
 		
 		fieldDivs[i] = createFieldDiv(fields[i]);
 	}
-}
+} //End change 2
 
 function appendFieldDivs(fieldDivs, fieldDivsContainer){
 	for(var i=0; i<fieldDivs.length; i++){
@@ -87,7 +87,7 @@ function toggleFieldDivs(fieldDivs, show){
 	}
 }*/
 
-function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton /*editButton*/){
+function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton /*editButton*/){ //Begin change 3
 	fieldDivsContainer.innerHTML = "";
 	appendFieldDivs(fieldDivs, fieldDivsContainer);
 	fieldDivs[0].insertBefore(toggleButton, fieldDivs[0].childNodes[0]);
@@ -100,7 +100,7 @@ function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton 
 		fieldDivs[i].childNodes[1].contentEditable = false;
 		fieldDivs[i].selectable = true;
 	}
-}
+} //End change 3
 
 function selectFieldDiv(fieldDivs, selection){
 	if(selection != fieldDivs[0]){

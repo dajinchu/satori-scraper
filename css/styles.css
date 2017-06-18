@@ -61,3 +61,10 @@
 	width: 20%;
 	font-size: 16px;
 }
+.el-selection {
+	outline: 1px solid blue;
+}
+.el-highlight {
+	background-color: rgb(254, 246, 76);
+	box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 2px;
+}
