@@ -161,7 +161,7 @@ function selectElement(element){
             return selectorList;
         });
         var selector = intersectionAll(selectorLists).join('')
-		if(selectedElements[0].parents('#schedule_table1')>0){
+		if(selectedElements[0].parents('#schedule_table1').length>0){
 			selector = '#schedule_table1>tbody>tr>td';
 		}
         similarElements = $(selector);
