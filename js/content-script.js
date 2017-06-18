@@ -105,13 +105,16 @@ function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton 
 	}
 } //End change 3
 
-function selectFieldDiv(fieldDivs, selection){
+function selectFieldDiv(fields, fieldDivs, selection){
 	if(selection != fieldDivs[0]){
 		for(var i=1; i<fieldDivs.length; i++){
 			if(fieldDivs[i] == selection){
 				var temp = fieldDivs[0];
 				fieldDivs[0] = selection;
 				fieldDivs[i] = temp;
+				temp = fields[0];
+				fields[0] = fields[i];
+				fields[i] = temp;
 			}
 		}
 	}
@@ -150,11 +153,11 @@ window.onload = function(){
 		fields.push(newField);
 		var newFieldDiv = createFieldDiv(newField);
 		fieldDivs.push(newFieldDiv);
-		selectFieldDiv(fieldDivs, newFieldDiv);
+		selectFieldDiv(fields, fieldDivs, newFieldDiv);
 		updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
 		newFieldDiv.addEventListener("click", function(){
 			if(this.selectable){
-				selectFieldDiv(fieldDivs, this);
+				selectFieldDiv(fields, fieldDivs, this);
 				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
 				showFieldDivs = !showFieldDivs;
 				toggleFieldDivs(fieldDivs, showFieldDivs);
@@ -179,7 +182,7 @@ window.onload = function(){
 	for(var i=0; i<fieldDivs.length; i++){
 		fieldDivs[i].addEventListener("click", function(){
 			if(this.selectable){
-				selectFieldDiv(fieldDivs, this);
+				selectFieldDiv(fields, fieldDivs, this);
 				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
 				showFieldDivs = !showFieldDivs;
 				toggleFieldDivs(fieldDivs, showFieldDivs);
@@ -232,8 +235,13 @@ window.onload = function(){
                 removeFromArray(selectorList, '.el-selection');
                 return selectorList;
             });
-            similarElements = $(intersectionAll(selectorLists).join(''));
+			var selector = intersectionAll(selectorLists).join('')
+            similarElements = $(selector);
             updateHighlights(similarElements);
+			
+			fields[0].selector = selector;
+			fieldDivs[0] = createFieldDiv(fields[0]);
+			updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle);
         }
     }
 
