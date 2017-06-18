@@ -24,7 +24,7 @@ function createFieldDivs(fieldDivs, fields){
 
 		//field that specifies the item field's name
 		var fieldName = document.createElement("div");
-		fieldName.className = "su-field-name-container";
+		fieldName.className = "su-field-name";
 		fieldName.innerHTML = fields[i].name;
 		fieldDiv.appendChild(fieldName);
 
