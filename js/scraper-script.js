@@ -2,6 +2,7 @@ function field(name, selector, example){
 	this.name = name;
 	this.selector = selector;
 	this.example = example;
+	this.selectable = false;
 }
 
 /*function toggleTable(table, showAll){
@@ -16,10 +17,33 @@ function field(name, selector, example){
 	fields[fields.length] = field;
 }*/
 
+function createFieldDiv(field){
+	var fieldDiv = document.createElement("div");
+	fieldDiv.className = "su-field";
+	
+	//field that specifies the item field's name
+	var fieldName = document.createElement("div");
+	fieldName.className = "su-field-name";
+	fieldName.innerHTML = field.name;
+	fieldDiv.appendChild(fieldName);
+	
+	var fieldSelector = document.createElement("div");
+	fieldSelector.className = "su-field-selector";
+	fieldSelector.innerHTML = field.selector;
+	fieldDiv.appendChild(fieldSelector);
+	
+	var fieldExample = document.createElement("div");
+	fieldExample.className = "su-field-example";
+	fieldExample.innerHTML = field.example;
+	fieldDiv.appendChild(fieldExample);
+	
+	return fieldDiv;
+}
+
 function createFieldDivs(fieldDivs, fields){
 	for(var i=0; i<fields.length; i++){
 		
-		//div that displays the item field's properties
+		/* //div that displays the item field's properties
 		var fieldDiv = document.createElement("div");
 		fieldDiv.className = "su-field";
 		
@@ -37,9 +61,9 @@ function createFieldDivs(fieldDivs, fields){
 		var fieldExample = document.createElement("div");
 		fieldExample.className = "su-field-example";
 		fieldExample.innerHTML = fields[i].example;
-		fieldDiv.appendChild(fieldExample);
+		fieldDiv.appendChild(fieldExample); */
 		
-		fieldDivs[i] = fieldDiv;
+		fieldDivs[i] = createFieldDiv(fields[i]);
 	}
 }
 
@@ -55,12 +79,27 @@ function toggleFieldDivs(fieldDivs, show){
 	}
 }
 
-function updateFieldDivs(fieldDivs, fieldDivsContainer, toggleButton, editButton){
+/*function toggleEditable(fieldDivs, editable){
+	var target = fieldDivs[0];
+	target.childNodes[1].contentEditable = editable;
+	if(!editable){
+		target.name = target.childNodes[0].innerHTML;
+	}
+}*/
+
+function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton /*editButton*/){
 	fieldDivsContainer.innerHTML = "";
 	appendFieldDivs(fieldDivs, fieldDivsContainer);
 	fieldDivs[0].insertBefore(toggleButton, fieldDivs[0].childNodes[0]);
-	fieldDivs[0].insertBefore(editButton, fieldDivs[0].childNodes[2]);
-	fieldDivs[0].childNodes[1].style.width = "16%";
+	fieldDivs[0].insertBefore(addButton, fieldDivs[0].childNodes[2]);
+	//fieldDivs[0].insertBefore(editButton, fieldDivs[0].childNodes[2]);
+	fieldDivs[0].childNodes[1].style.width = "14%";
+	fieldDivs[0].childNodes[1].contentEditable = true;
+	fieldDivs[0].selectable = false;
+	for(var i=1; i<fieldDivs.length; i++){
+		fieldDivs[i].childNodes[1].contentEditable = false;
+		fieldDivs[i].selectable = true;
+	}
 }
 
 function selectFieldDiv(fieldDivs, selection){
@@ -83,10 +122,12 @@ var field2 = new field("product_price", "class=\"product_price\"", "19.99");
 var field3 = new field("product_rating", "class=\"product_rating\"", "4.51");
 var fields = [field1, field2, field3];
 var fieldDivs = new Array();
+var fieldDivsAdd = document.createElement("div");
 var fieldDivsToggle = document.createElement("div");
-var fieldDivsEdit = document.createElement("div");
+//var fieldDivsEdit = document.createElement("div");
 var fieldDivsContainer;
 var showFieldDivs;
+//var editFieldDiv;
 
 window.onload = function(){
 	//var SUTable = document.getElementById("su-table");
@@ -100,23 +141,71 @@ window.onload = function(){
 	});*/
 	fieldDivsContainer = document.getElementById("su-fields-container");
 	showFieldDivs = false;
+	//editFieldDiv = false;
+	fieldDivsAdd.id = "su-field-add";
+	fieldDivsAdd.innerHTML = "+";
+	
 	fieldDivsToggle.id = "su-fields-toggle";
-	fieldDivsEdit.id = "su-field-edit";
-	fieldDivsEdit.innerHTML = "/";
+	fieldDivsToggle.innerHTML = ">";
+	//fieldDivsEdit.id = "su-field-edit";
+	//fieldDivsEdit.innerHTML = "|";
 	
 	createFieldDivs(fieldDivs, fields);
-	updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsToggle, fieldDivsEdit);
+	updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
 	toggleFieldDivs(fieldDivs, showFieldDivs);
-	fieldDivsToggle.innerHTML = ">";
+
+	fieldDivsAdd.addEventListener("click", function(){
+		var newField = new field("Name", "Selector", "Example");
+		fields.push(newField);
+		var newFieldDiv = createFieldDiv(newField);
+		fieldDivs.push(newFieldDiv);
+		selectFieldDiv(fieldDivs, newFieldDiv);
+		updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+		newFieldDiv.addEventListener("click", function(){
+			if(this.selectable){
+				selectFieldDiv(fieldDivs, this);
+				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+				showFieldDivs = !showFieldDivs;
+				toggleFieldDivs(fieldDivs, showFieldDivs);
+				fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
+				this.childNodes[1].focus();
+			}
+		});
+		//selectFieldDiv(fieldDivs, newFieldDiv);
+		//updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+		/*showFieldDivs = !showFieldDivs;
+		toggleFieldDivs(fieldDivs, showFieldDivs);
+		fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
+		newFieldDiv.childNodes[1].focus();*/
+	});
+	
 	fieldDivsToggle.addEventListener("click", function(){
 		showFieldDivs = !showFieldDivs;
 		toggleFieldDivs(fieldDivs, showFieldDivs);
 		fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
 	});
+	
 	for(var i=0; i<fieldDivs.length; i++){
 		fieldDivs[i].addEventListener("click", function(){
-			selectFieldDiv(fieldDivs, this);
-			updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsToggle, fieldDivsEdit);
+			if(this.selectable){
+				selectFieldDiv(fieldDivs, this);
+				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle /*fieldDivsEdit*/);
+				showFieldDivs = !showFieldDivs;
+				toggleFieldDivs(fieldDivs, showFieldDivs);
+				fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
+				this.childNodes[1].focus();
+			}
+		});
+		fieldDivs[i].addEventListener("keypress", function(){
+			if(this == fieldDivs[0]){
+				this.name = this.childNodes[1].innerHTML;
+			}
 		});
 	}
+	
+	/*fieldDivsEdit.addEventListener("click", function(){
+		editFieldDiv = !editFieldDiv;
+		toggleEditable(fieldDivs, editFieldDiv);
+		editFieldDiv.innerHTML = editFieldDiv ? "/" : "|";
+	});*/
 }
