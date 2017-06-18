@@ -3,8 +3,6 @@
 //scraperUtilityCSS.src = chrome.extension.getURL("css/styles.css");
 //scraperUtilityScript.src = chrome.extension.getURL("js/scraper-script.js")
 
-console.log(document.body.firstChild.id);
-
 var CSSNode = document.createElement("link");
 CSSNode.rel = "stylesheet";
 CSSNode.href = chrome.extension.getURL("css/styles.css");

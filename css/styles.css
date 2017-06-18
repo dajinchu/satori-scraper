@@ -6,19 +6,53 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	width: 100%;
-	z-index: 16;
-	background: #00c3ff;
+	z-index: 2000000000;
+	background: white;
 	font-family: Verdana;
 	font-weight: normal;
 }
 
-.SU-title{
-	padding: 12px;
-	text-align: center;
-	font-size: 32px;
+/*#su-logo{
+	padding: 8px;
+	font-size: 16px;
+}*/
+
+/*#su-table{
+	text-align: left;
+	font-size: 16px;
 }
-.SU-subtitle{
-	padding-bottom: 12px;
-	text-align: center;
+
+#su-table>tbody>tr>th, td{
+	padding: 8px;
+}*/
+
+#su-fields-toggle{
+	position: inherit;
+	z-index: 2000000001;
+	padding: 8px;
+	font-size: 16px;
+}
+
+.su-field{
+	display: flex;
+	width: 100%;
+}
+
+.su-field-name{
+	padding: 8px;
+	padding-left: 24px;
+	width: 20%;
+	font-size: 16px;
+}
+
+.su-field-selector{
+	padding: 8px;
+	width: 20%;
+	font-size: 16px;
+}
+
+.su-field-example{
+	padding: 8px;
+	width: 20%;
 	font-size: 16px;
 }
