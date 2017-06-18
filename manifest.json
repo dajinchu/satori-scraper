@@ -20,6 +20,7 @@
 	"web_accessible_resources": [
 		"html/*",
 		"css/*",
-		"js/*"
+		"js/*",
+		"images/*"
 	]
 }

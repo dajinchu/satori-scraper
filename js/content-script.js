@@ -98,7 +98,7 @@ function updateFieldDivs(fieldDivs, fieldDivsContainer, addButton, toggleButton,
 	fieldDivs[0].insertBefore(addButton, fieldDivs[0].childNodes[2]);
     fieldDivs[0].appendChild(submitButton);
 	//fieldDivs[0].insertBefore(editButton, fieldDivs[0].childNodes[2]);
-	fieldDivs[0].childNodes[1].style.width = "14%";
+	//fieldDivs[0].childNodes[1].style.width = "14%";
 	fieldDivs[0].childNodes[1].contentEditable = true;
 	fieldDivs[0].selectable = false;
 	for(var i=1; i<fieldDivs.length; i++){
@@ -128,8 +128,12 @@ function selectFieldDiv(fields, fieldDivs, selection){
 var field1 = new field("field", "", "");
 var fields = [field1];
 var fieldDivs = new Array();
-var fieldDivsAdd = document.createElement("div");
-var fieldDivsToggle = document.createElement("div");
+var fieldDivsAdd = document.createElement("img");
+fieldDivsAdd.src = chrome.extension.getURL("images/add.png");
+
+var fieldDivsToggle = document.createElement("img");
+var collapsedImage = chrome.extension.getURL("images/collapsed.png");
+var uncollapsedImage = chrome.extension.getURL("images/uncollapsed.png");
 //var fieldDivsEdit = document.createElement("div");
 var fieldDivsContainer;
 var showFieldDivs;
@@ -213,7 +217,7 @@ function onLoad(){
 	fieldDivsAdd.innerHTML = "+";
 
 	fieldDivsToggle.id = "su-fields-toggle";
-	fieldDivsToggle.innerHTML = ">";
+	fieldDivsToggle.src = collapsedImage;
 	//fieldDivsEdit.id = "su-field-edit";
 	//fieldDivsEdit.innerHTML = "|";
 
@@ -234,7 +238,7 @@ function onLoad(){
 				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle, submitButton /*fieldDivsEdit*/);
 				showFieldDivs = !showFieldDivs;
 				toggleFieldDivs(fieldDivs, showFieldDivs);
-				fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
+				fieldDivsToggle.src = showFieldDivs ? uncollapsedImage : collapsedImage;
 				this.childNodes[1].focus();
 			}
 		});
@@ -249,7 +253,7 @@ function onLoad(){
 	fieldDivsToggle.addEventListener("click", function(){
 		showFieldDivs = !showFieldDivs;
 		toggleFieldDivs(fieldDivs, showFieldDivs);
-		fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
+		fieldDivsToggle.src = showFieldDivs ? uncollapsedImage : collapsedImage;
 	});
 
     submitButton.addEventListener('click',function(){
@@ -293,7 +297,7 @@ function onLoad(){
 				updateFieldDivs(fieldDivs, fieldDivsContainer, fieldDivsAdd, fieldDivsToggle, submitButton /*fieldDivsEdit*/);
 				showFieldDivs = !showFieldDivs;
 				toggleFieldDivs(fieldDivs, showFieldDivs);
-				fieldDivsToggle.innerHTML = showFieldDivs ? "V" : ">";
+				fieldDivsToggle.src = showFieldDivs ? uncollapsedImage : collapsedImage;
 				this.childNodes[1].focus();
 			}
 		});
