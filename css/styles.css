@@ -6,7 +6,7 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	width: 100%;
-	z-index: 16;
+	z-index: 99999;
 	background: #00c3ff;
 	font-family: Verdana;
 	font-weight: normal;
@@ -21,4 +21,11 @@
 	padding-bottom: 12px;
 	text-align: center;
 	font-size: 16px;
+}
+.el-selection {
+	outline: 1px solid blue;
+}
+.el-highlight {
+	background-color: rgb(254, 246, 76);
+	box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 2px;
 }
