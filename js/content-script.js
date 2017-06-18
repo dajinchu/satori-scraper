@@ -161,6 +161,9 @@ function selectElement(element){
             return selectorList;
         });
         var selector = intersectionAll(selectorLists).join('')
+		if(selectedElements[0].parents('#schedule_table1')>0){
+			selector = '#schedule_table1>tbody>tr>td';
+		}
         similarElements = $(selector);
         updateHighlights(similarElements);
 
@@ -184,7 +187,6 @@ function removeFromArray(array, element){
         array.splice(index, 1);
     }
 }
-
 // https://jsfiddle.net/Arg0n/zL0jgspz/2/
 function intersectionAll() {
     var result = [];
