@@ -1,32 +1,62 @@
-<!-- <div id="su-logo">Scraper Tool</div> -->
-<!-- <table id="su-table">
-	 <tr>
-		<th>Name</th>
-		<th>Selector</th>
-		<th>Example</th>
-	</tr>
-	<tr>
-		<td id="su-table-toggle">Placeholder</th>
-		<td>Placeholder</th>
-		<td>Placeholder</th>
-	</tr>
-	<tr>
-		<td>Placeholder 2</th>
-		<td>Placeholder 2</th>
-		<td>Placeholder 2</th>
-	</tr>
-	<tr>
-		<td>Placeholder 3</th>
-		<td>Placeholder 3</th>
-		<td>Placeholder 3</th>
-	</tr>
-</table> -->
-	<!--<div id="su-field-name">Placeholder</div>
-	<div id="su-field-selector">Placeholder</div>
-	<div id="su-field-
-	<div id="su-fields">
-		<a href="#">Placeholder</a>
-	</div>
-</div> -->
-<div id="su-fields-container"></div>
-<div id="su-divider"></div>
+<head>
+    <script src='../js/jquery-3.2.1.min.js'></script>
+    <script src='../js/bootstrap.min.js'></script>
+    <link rel="stylesheet" type="text/css" href='../css/bootstrap.min.css'>
+    <script src='../js/iframe.js'></script>
+    <link rel="stylesheet" type="text/css" href='../css/iframe.css'>
+</head>
+<body>
+    <div id='form-container' class='container-fluid'>
+        <div class="row">
+            <form class="form col-md-10">
+                <div class="row">
+                    <div class="col-md-2">
+                        <input type="text" name="item-name" class="form-control" placeholder="Item Name" value='Name' disabled>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">&nbsp;<span class="glyphicon glyphicon-pencil"></span></button>
+                            </span>
+                            <input type="text" name="item-selector" class="selector-input form-control" placeholder="CSS Selector">
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="field-example">
+
+                        </label>
+                    </div>
+                </div>
+            </form>
+            <div class="col-md-2 text-right">
+                <button id="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+        <div class="row">
+            <form class="form col-md-10">
+                <div class="row">
+                    <div class="col-md-2">
+                        <input type="text" name="item-name" class="form-control" placeholder="Item Name">
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">&nbsp;<span class="glyphicon glyphicon-pencil"></span></button>
+                            </span>
+                            <input type="text" name="item-selector" class="selector-input form-control" placeholder="CSS Selector">
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="field-example">
+
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
