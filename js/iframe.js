@@ -6,28 +6,32 @@ $(document).ready(function(){
     addFormListener();
     addSubmitButtonListener();
     addSelectorListener();
+    addNewRow();
 });
 
 function addFormListener(){
     //Figure out which form was focused last so when a selector is picked is goes to the right row
-    lastFocusedItem = $("input.selector-input").get(0);
-    $(".form").on('click',function(){
-        var thisinput = $(this).find("input.selector-input");
-        if($(lastFocusedItem).is(thisinput))return;
-        lastFocusedItem = thisinput;
+    lastFocusedItem = $(".form").get(0);
+    $("#form-container").on('click','.form', function(){
+        if($(lastFocusedItem).is(this))return;
+        lastFocusedItem = this;
         console.log('clic');
         chrome.runtime.sendMessage({
             action: 'user-selection',
-            selector:  thisinput.val()
+            selector:  $(this).find('input.selector-input').val()
         });
     });
 
     //Listen to if the user wants to give their own selector
-    $("input.selector-input").on('input', function (e) {
+    $("body").on('input','input.selector-input', function (e) {
         chrome.runtime.sendMessage({
             action: 'user-selection',
             selector: $(this).val()
         });
+    });
+
+    $('body').on('input', '#form-container>div:last-child input', function(e){
+        addNewRow();
     });
 }
 
@@ -60,10 +64,22 @@ function addSubmitButtonListener(){
 function addSelectorListener(){
     chrome.runtime.onMessage.addListener(function(request, sender, callback) {
         if (request.action == "selection" && request.selector) {
-            $(lastFocusedItem).val(request.selector);
+            $(lastFocusedItem).find("input.selector-input").val(request.selector);
+            $(lastFocusedItem).find("p.element-count").text((request.count>0)?request.count+' elements':'');
+            $(lastFocusedItem).find("p.field-example").text(request.example);
         }
     });
+}
 
+function addNewRow(){
+    var newrow = $('<div class="row"></div>');
+    newrow.load('formrow.html', function(){
+        $('#form-container').append(newrow);
+        chrome.runtime.sendMessage({
+            action: 'resize',
+            height: document.body.scrollHeight
+        });
+    });
 }
 
 function getItems(){

@@ -19,7 +19,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
             }
         });
     }
+    // Pass along messages from iframe to content-script
     if(request.action == "user-selection"){
+        chrome.tabs.sendMessage(sender.tab.id, request);
+    }
+    if(request.action == "resize"){
         chrome.tabs.sendMessage(sender.tab.id, request);
     }
 });

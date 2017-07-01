@@ -1,3 +1,11 @@
 #form-container{
     padding-top:15px;
 }
+.field-example{
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.form p{
+    margin-top:7px;
+    margin-bottom:7px;
+}

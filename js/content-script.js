@@ -10,11 +10,12 @@ var iframeContainer = $('<div id="scraper-tool">');
 iframeContainer.prependTo(document.body);
 
 
-var iframe = $('<iframe  frameBorder="0">');
+var iframe = $('<iframe id"scraper" frameBorder="0" scrolling="no">');
 iframe.attr('src', chrome.extension.getURL("html/scraper.html"));
 iframe.appendTo(iframeContainer);
 
 enableHighlighting();
+
 // var iframe = $('<iframe allowTransparency="true">');
 // iframe.appendTo(iframeContainer);
 // var iframeDocument = iframe[0].contentDocument;
@@ -48,15 +49,27 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
         }
         selectedElements = [];
         updateHighlights(similarElements);
+        chrome.runtime.sendMessage({
+            action: 'selection',
+            selector: request.selector,
+            count: similarElements.length,
+            example: example(similarElements)
+        });
+    }
+    if(request.action == "resize"){
+        iframe.height(request.height);
     }
 });
 
 function validTarget (target){
-    return target.contents().length &&
-           target.contents().get(0).textContent.trim().length>0;
+    return (target.contents().length &&
+            target.contents().text() &&
+            target.contents().text().length>0) ||
+            target.prop('tagName')=="IMG";
 }
 function selectElement(element){
     selectedElements.push(element);
+    element.addClass("el-highlight");
     if(selectedElements.length > 1){
         var selectorLists = selectedElements.map(function(e){
             var selectorList = e.attr('class').split(/\s+/).map(function(cls){return '.'+cls});
@@ -65,22 +78,38 @@ function selectElement(element){
             return selectorList;
         });
         var selector = intersectionAll(selectorLists).join('')
-		if(selectedElements[0].parents('#schedule_table1').length>0){
-			selector = '#schedule_table1>tbody>tr>td';
-		}
+
         similarElements = $(selector);
+        if(similarElements.length==0){
+            selectedElements = [];
+        }
         updateHighlights(similarElements);
 
         chrome.runtime.sendMessage({
             action: 'selection',
-            selector: selector
+            selector: selector,
+            count: similarElements.length,
+            example: example(similarElements)
         });
+    }
+}
+
+function example(elements){
+    if(elements.length>0){
+        var first = $(elements.get(0));
+        if(first.prop('tagName')=="IMG"){
+            return first.prop('src');
+        }else{
+            return first.text();
+        }
+    }else{
+        return '';
     }
 }
 
 var _lastHighlights = [];
 function updateHighlights(newHighlights){
-    $(_lastHighlights).removeClass("el-highlight");
+    $(".el-highlight").removeClass("el-highlight");
     $(newHighlights).addClass("el-highlight");
     _lastHighlights = newHighlights;
 }
@@ -132,7 +161,6 @@ function enableHighlighting(){
         var target = $(event.target);
         if(validTarget(target)){
             selectElement(target);
-            target.addClass("el-highlight");
         }
         return false;
     });
