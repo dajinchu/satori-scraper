@@ -38,6 +38,7 @@ enableHighlighting();
 // selection highlighting
 var selectedElements = [];
 var similarElements = [];
+var boxselector = '';
 
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     console.log(request);
@@ -59,13 +60,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     if(request.action == "resize"){
         iframe.height(request.height);
     }
+    if(request.action == "boxselector"){
+        boxselector = request.selector;
+    }
 });
 
 function validTarget (target){
-    return (target.contents().length &&
-            target.contents().text() &&
-            target.contents().text().length>0) ||
-            target.prop('tagName')=="IMG";
+    return (boxselector.length==0 || target.parents(boxselector).length) &&
+            ((target.contents().length &&
+             target.contents().text() &&
+             target.contents().text().length>0) ||
+             target.prop('tagName')=="IMG");
 }
 function selectElement(element){
     selectedElements.push(element);

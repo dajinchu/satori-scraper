@@ -26,4 +26,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     if(request.action == "resize"){
         chrome.tabs.sendMessage(sender.tab.id, request);
     }
+    if(request.action == "boxselector"){
+        chrome.tabs.sendMessage(sender.tab.id, request);
+    }
 });

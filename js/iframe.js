@@ -64,6 +64,13 @@ function addSubmitButtonListener(){
 function addSelectorListener(){
     chrome.runtime.onMessage.addListener(function(request, sender, callback) {
         if (request.action == "selection" && request.selector) {
+            var box = $('#form-container>div:first-child .form');
+            if($(lastFocusedItem).is(box)){
+                chrome.runtime.sendMessage({
+                    action: 'boxselector',
+                    selector: request.selector
+                });
+            }
             $(lastFocusedItem).find("input.selector-input").val(request.selector);
             $(lastFocusedItem).find("p.element-count").text((request.count>0)?request.count+' elements':'');
             $(lastFocusedItem).find("p.field-example").text(request.example);
