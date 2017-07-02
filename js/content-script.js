@@ -1,44 +1,12 @@
-// //Injection
-// var scraperTool = $('<iframe>', {
-//    src: chrome.extension.getURL("html/scraper.html"),
-//    id:  'scraper-tool',
-//    frameborder: 0,
-//    scrolling: 'no'
-//    });
-// scraperTool.appendTo(document.body);
-var iframeContainer = $('<div id="scraper-tool">');
-iframeContainer.prependTo(document.body);
-
-
-var iframe = $('<iframe id"scraper" frameBorder="0" scrolling="no">');
-iframe.attr('src', chrome.extension.getURL("html/scraper.html"));
-iframe.appendTo(iframeContainer);
-
-enableHighlighting();
-
-// var iframe = $('<iframe allowTransparency="true">');
-// iframe.appendTo(iframeContainer);
-// var iframeDocument = iframe[0].contentDocument;
-// iframeDocument.write(getFrameHtml('html/scraper.html'));
-
-// var jqLink = $("<script/>",
-// 	{ src: chrome.extension.getURL("js/jquery-3.2.1.min.js"), type: "text/javascript" });
-// var cssLink = $("<link/>",
-//     { rel: "stylesheet", href: chrome.extension.getURL("css/bootstrap.min.css"), type: "text/css" });
-// var jsLink = $("<script/>",
-//     { src: chrome.extension.getURL("js/bootstrap.min.js"), type: "text/javascript" });
-// var myjsLink = $("<script/>",
-// 	{ src: chrome.extension.getURL("js/iframe.js"), type: "text/javascript" });
-//
-// jqLink.appendTo(iframeDocument.head);
-// cssLink.appendTo(iframeDocument.head);
-// jsLink.appendTo(iframeDocument.head);
-// myjsLink.appendTo(iframeDocument.head);
-
-// selection highlighting
 var selectedElements = [];
 var similarElements = [];
 var boxselector = '';
+var iframe;
+
+$(document).ready(function(){
+    injectIFrame();
+});
+enableHighlighting();
 
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     console.log(request);
@@ -64,6 +32,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
         boxselector = request.selector;
     }
 });
+
+function injectIFrame(){
+    var iframeContainer = $('<div id="scraper-tool">');
+    iframeContainer.prependTo(document.body);
+
+    iframe = $('<iframe id"scraper" frameBorder="0" scrolling="no">');
+    iframe.attr('src', chrome.extension.getURL("html/scraper.html"));
+    iframe.appendTo(iframeContainer);
+}
 
 function validTarget (target){
     return (boxselector.length==0 || target.parents(boxselector).length) &&
@@ -115,7 +92,11 @@ function example(elements){
 var _lastHighlights = [];
 function updateHighlights(newHighlights){
     $(".el-highlight").removeClass("el-highlight");
-    $(newHighlights).addClass("el-highlight");
+    if(boxselector.length>0){
+        $(boxselector).find(newHighlights).addClass("el-highlight");
+    }else{
+        $(newHighlights).addClass("el-highlight");
+    }
     _lastHighlights = newHighlights;
 }
 
@@ -162,7 +143,10 @@ function enableHighlighting(){
         $(event.target).removeClass("el-selection");
     });
 
-    $(window).click(function(event) {
+    $('*').removeAttr('onclick');
+    $('*').off('click')
+
+    $(window).on('click', function(event) {
         var target = $(event.target);
         if(validTarget(target)){
             selectElement(target);

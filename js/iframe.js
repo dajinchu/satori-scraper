@@ -18,7 +18,7 @@ function addFormListener(){
         console.log('clic');
         chrome.runtime.sendMessage({
             action: 'user-selection',
-            selector:  $(this).find('input.selector-input').val()
+            selector:  $(this).find('input.selector-input').val() || ''
         });
     });
 
@@ -63,7 +63,7 @@ function addSubmitButtonListener(){
 
 function addSelectorListener(){
     chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-        if (request.action == "selection" && request.selector) {
+        if (request.action == "selection") {
             var box = $('#form-container>div:first-child .form');
             if($(lastFocusedItem).is(box)){
                 chrome.runtime.sendMessage({
@@ -82,9 +82,11 @@ function addNewRow(){
     var newrow = $('<div class="row"></div>');
     newrow.load('formrow.html', function(){
         $('#form-container').append(newrow);
+        var newheight = $('#form-container').prop('scrollHeight');
+        console.log(document.body.offsetHeight);
         chrome.runtime.sendMessage({
             action: 'resize',
-            height: document.body.scrollHeight
+            height: newheight
         });
     });
 }
